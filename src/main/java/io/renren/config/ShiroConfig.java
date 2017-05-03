@@ -1,5 +1,7 @@
 package io.renren.config;
 
+import io.renren.utils.shiro.RedisCacheManager;
+import io.renren.utils.shiro.RedisSessionDAO;
 import io.renren.utils.shiro.UserRealm;
 import org.apache.shiro.mgt.SecurityManager;
 import org.apache.shiro.session.mgt.SessionManager;
@@ -9,6 +11,7 @@ import org.apache.shiro.spring.web.ShiroFilterFactoryBean;
 import org.apache.shiro.web.mgt.DefaultWebSecurityManager;
 import org.apache.shiro.web.session.mgt.DefaultWebSessionManager;
 import org.springframework.aop.framework.autoproxy.DefaultAdvisorAutoProxyCreator;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -26,20 +29,35 @@ import java.util.Map;
 public class ShiroConfig {
 
     @Bean(name = "sessionManager")
-    public SessionManager sessionManager(){
+    public SessionManager sessionManager(RedisSessionDAO sessionDAO,
+    		@Value(value = "${ifEnableRediSession}") boolean ifEnableRediSession){
         DefaultWebSessionManager sessionManager = new DefaultWebSessionManager();
         //设置session过期时间为1小时(单位：毫秒)，默认为30分钟
         sessionManager.setGlobalSessionTimeout(60 * 60 * 1000);
         sessionManager.setSessionValidationSchedulerEnabled(true);
-
+        
+        if(ifEnableRediSession){
+        	sessionManager.setSessionDAO(sessionDAO);
+        }
+        
+        
+        
         return sessionManager;
     }
 
     @Bean(name = "securityManager")
-    public SecurityManager securityManager(UserRealm userRealm, SessionManager sessionManager) {
-        DefaultWebSecurityManager securityManager = new DefaultWebSecurityManager();
+    public SecurityManager securityManager(UserRealm userRealm, SessionManager sessionManager,
+    		RedisCacheManager cacheManager,
+    		@Value(value = "${ifEnableRediSession}") boolean ifEnableRediSession) {
+    	
+    	DefaultWebSecurityManager securityManager = new DefaultWebSecurityManager();
         securityManager.setRealm(userRealm);
         securityManager.setSessionManager(sessionManager);
+        
+        if(ifEnableRediSession){
+        	securityManager.setCacheManager(cacheManager);
+        }
+        
 
         return securityManager;
     }
