@@ -32,8 +32,8 @@ public class UserRealm extends AuthorizingRealm {
      */
 	@Override
 	protected AuthorizationInfo doGetAuthorizationInfo(PrincipalCollection principals) {
-		SysUserEntity user = (SysUserEntity)principals.getPrimaryPrincipal();
-		Long userId = user.getUserId();
+		//SysUserEntity user = (SysUserEntity)principals.getPrimaryPrincipal();
+		Long userId = (Long)principals.getPrimaryPrincipal();
 
 		//用户权限列表
 		Set<String> permsSet = sysMenuService.getUserPermissions(userId);
@@ -70,7 +70,7 @@ public class UserRealm extends AuthorizingRealm {
         	throw new LockedAccountException("账号已被锁定,请联系管理员");
         }
         
-        SimpleAuthenticationInfo info = new SimpleAuthenticationInfo(user, password, getName());
+        SimpleAuthenticationInfo info = new SimpleAuthenticationInfo(user.getUserId(), password, getName());
         return info;
 	}
 

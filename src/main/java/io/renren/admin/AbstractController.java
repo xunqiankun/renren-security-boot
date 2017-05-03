@@ -2,6 +2,8 @@ package io.renren.admin;
 
 import io.renren.entity.SysUserEntity;
 import io.renren.utils.ShiroUtils;
+
+import org.apache.shiro.SecurityUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -16,10 +18,19 @@ public abstract class AbstractController {
 	protected Logger logger = LoggerFactory.getLogger(getClass());
 	
 	protected SysUserEntity getUser() {
-		return ShiroUtils.getUserEntity();
+		logger.error("1111=="+SecurityUtils.getSubject().getPrincipal().toString());
+		logger.error("aaaa=="+SecurityUtils.getSubject().getPrincipal().getClass().getClassLoader());
+		logger.error("bbbb=="+SysUserEntity.class.getClassLoader());
+		
+		
+		
+		
+		return (SysUserEntity)SecurityUtils.getSubject().getPrincipal();
+		//return ShiroUtils.getUserEntity();
 	}
 
 	protected Long getUserId() {
-		return getUser().getUserId();
+//		return getUser().getUserId();
+		return (Long)SecurityUtils.getSubject().getPrincipal();
 	}
 }

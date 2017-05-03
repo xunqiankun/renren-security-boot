@@ -32,6 +32,11 @@ public interface SysUserService {
 	SysUserEntity queryByUserName(String username);
 	
 	/**
+	 * 根据用户Id，查询系统用户
+	 */
+	SysUserEntity queryByUserId(Long userId);
+	
+	/**
 	 * 根据用户ID，查询用户
 	 * @param userId
 	 * @return

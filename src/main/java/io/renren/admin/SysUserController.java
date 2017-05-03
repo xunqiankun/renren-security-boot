@@ -60,7 +60,9 @@ public class SysUserController extends AbstractController {
 	 */
 	@RequestMapping("/info")
 	public R info(){
-		return R.ok().put("user", getUser());
+		
+		SysUserEntity sysuser = sysUserService.queryByUserId(getUserId());
+		return R.ok().put("user", sysuser);
 	}
 	
 	/**

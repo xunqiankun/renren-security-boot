@@ -31,6 +31,11 @@ public interface SysUserDao extends BaseDao<SysUserEntity> {
 	SysUserEntity queryByUserName(String username);
 	
 	/**
+	 * 根据用户Id，查询系统用户
+	 */
+	SysUserEntity queryByUserId(Long userId);
+	
+	/**
 	 * 修改密码
 	 */
 	int updatePassword(Map<String, Object> map);
